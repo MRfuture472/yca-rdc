@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Fiche créateur | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="section"><div class="container" style="max-width:900px" id="wrap"></div></section>
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/components.js"></script>
+<script>
+  mountLayout('creators.html');
+  var S=YCA,ST=YCAC.STATUS;
+  var id=new URLSearchParams(location.search).get('id');
+  var c=S.find('creators',id)||S.get('creators')[0];
+  if(c){
+    document.title=c.name+' — '+c.channel+' | YCA RDC';
+    var st=ST[c.status]||ST.membre;
+    function soc(lbl,u,cls){return u?'<a class="chip '+(cls||'')+'" target="_blank" rel="noopener" href="'+esc(u)+'">'+lbl+'</a>':'';}
+    var links=c.public?[soc('YouTube',c.youtube,'chip-red'),soc('TikTok',c.tiktok),soc('Instagram',c.instagram),soc('Facebook',c.facebook)].join(''):'<span class="muted">Le créateur n’a pas rendu ses réseaux publics.</span>';
+    var pro=(c.public&&c.pro)?'<p>💼 Contact professionnel : <strong>'+esc(c.pro)+'</strong></p>':'';
+    wrap.innerHTML='<div class="breadcrumb"><a href="index.html">Accueil</a> / <a href="creators.html">Créateurs</a> / '+esc(c.name)+'</div>'
+      +'<div class="panel"><div class="grid" style="grid-template-columns:auto 1fr;gap:24px;align-items:center">'
+      +'<img src="'+esc(c.photo)+'" alt="'+esc(c.name)+'" style="width:140px;height:140px;border-radius:24px;object-fit:cover">'
+      +'<div><span class="badge '+st[1]+'">'+st[0]+'</span><h1 style="margin:8px 0 2px">'+esc(c.name)+'</h1>'
+      +'<div style="color:var(--red);font-weight:700;font-size:1.1rem">'+esc(c.channel)+'</div>'
+      +'<div class="creator-meta" style="justify-content:flex-start;margin-top:8px"><span>📍 '+esc(c.city)+', '+esc(c.province)+'</span><span>🏷️ '+esc(c.niche)+'</span></div></div></div>'
+      +'<div class="divider"></div>'
+      +'<div class="grid g4"><div><div class="num" style="font-family:var(--head);font-weight:800;font-size:1.5rem;color:var(--black)">'+esc(c.subs)+'</div><div class="muted" style="font-size:.82rem">Abonnés</div></div>'
+      +'<div><div style="font-family:var(--head);font-weight:800;font-size:1.5rem">'+esc(c.videos)+'</div><div class="muted" style="font-size:.82rem">Vidéos</div></div>'
+      +'<div><div style="font-family:var(--head);font-weight:800;font-size:1.5rem">'+esc(c.type)+'</div><div class="muted" style="font-size:.82rem">Type de contenu</div></div>'
+      +'<div><div style="font-family:var(--head);font-weight:800;font-size:1.5rem">'+esc(c.country)+'</div><div class="muted" style="font-size:.82rem">Pays</div></div></div>'
+      +'<div class="divider"></div><h3>À propos</h3><p class="mt">'+esc(c.desc)+'</p>'+pro
+      +'<div class="divider"></div><h3 class="mb">Réseaux</h3><div class="flex wrap gap">'+links+'</div>'
+      +'<div class="divider"></div><a class="btn btn-ghost btn-sm" href="creators.html">← Retour à l’annuaire</a></div>';
+  }
+</script>
+</body>
+</html>

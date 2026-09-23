@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Campagnes | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Campagnes</div>
+  <h1>Campagnes avec les marques</h1>
+  <p>YCA RDC met en relation les marques et les créateurs congolais pour des campagnes authentiques et mesurables.</p>
+  <div class="flex gap wrap mt"><a class="btn btn-primary" href="brand.html">Vous êtes une marque ?</a></div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="toolbar"><select class="select" id="fStatus" onchange="render()"><option value="">Tous les statuts</option><option>Brouillon</option><option>Ouverte</option><option>En cours</option><option>Terminée</option><option>Annulée</option></select></div>
+  <div class="grid g3" id="list"></div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/components.js"></script>
+<script>
+  mountLayout('campaigns.html');
+  var S=YCA,all=S.get('campaigns');
+  function badge(st){var m={'Ouverte':'badge-verifie','En cours':'badge-partenaire','Terminée':'badge-membre','Brouillon':'badge-membre','Annulée':'badge-membre'};return '<span class="badge '+(m[st]||'badge-membre')+'">'+esc(st)+'</span>';}
+  function render(){
+    var s=fStatus.value;var res=all.filter(function(k){return !s||k.status===s;});
+    list.innerHTML=res.map(function(k){return '<div class="card reveal"><div class="card-body">'+badge(k.status)+'<h3>'+esc(k.name)+'</h3><div style="font-weight:600">🏢 '+esc(k.brand)+'</div><p style="font-size:.9rem">'+esc(k.objectives)+'</p><div class="divider"></div><div class="creator-meta" style="justify-content:flex-start"><span>💰 '+esc(k.budget)+'</span><span>👥 '+k.creators+' créateurs</span></div><div class="creator-meta" style="justify-content:flex-start"><span>📦 '+esc(k.deliverables)+'</span></div><div class="creator-meta" style="justify-content:flex-start"><span>📅 '+esc(k.start)+' → '+esc(k.end)+'</span><span>📺 '+esc(k.platforms)+'</span></div></div></div>';}).join('');
+    document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');});
+  }
+  window.render=render;render();
+</script>
+</body>
+</html>

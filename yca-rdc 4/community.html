@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Communauté | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Communauté</div>
+  <h1>Rejoins la communauté YCA RDC</h1>
+  <p>Connecte-toi avec les créateurs congolais sur toutes nos plateformes. YouTube est au cœur du projet ; les autres réseaux sont des canaux complémentaires.</p>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="social-grid" id="socials"></div>
+  <div class="cta-band reveal" style="margin-top:40px">
+    <h2>Prêt à nous rejoindre ?</h2>
+    <p>Crée ton profil de créateur et intègre l’annuaire officiel de la communauté.</p>
+    <a class="btn btn-light" href="join.html">Rejoindre la communauté</a>
+  </div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script>
+  mountLayout('community.html');
+  var soc=YCA.get('social');
+  var items=[['youtube','▶','YouTube','Le cœur de la communauté'],['tiktok','♪','TikTok','Formats courts'],['facebook','f','Facebook','Groupe & page'],['instagram','◉','Instagram','Coulisses'],['whatsapp','☎','WhatsApp','Échanges directs'],['telegram','✈','Telegram','Annonces']];
+  socials.innerHTML=items.map(function(i){var u=soc[i[0]];return u?'<a class="social-card reveal" href="'+esc(u)+'" target="_blank" rel="noopener"><span class="ic">'+i[1]+'</span><b>'+i[2]+'</b><span class="muted" style="font-size:.82rem">'+i[3]+'</span></a>':'';}).join('');
+  document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');});
+</script>
+</body>
+</html>

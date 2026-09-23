@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Academy | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Academy</div>
+  <h1>YCA Academy</h1>
+  <p>Formez-vous à YouTube et à la création de contenu : montage, miniatures, SEO, monétisation, Shorts, IA et bien plus. Formations gratuites, payantes et premium.</p>
+  <div class="flex gap wrap mt"><a class="btn btn-primary" href="student-space.html">Mon espace étudiant</a></div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="grid g3 mb" style="margin-bottom:30px">
+    <div class="pillar"><span class="ic">🆓</span><h3>Formation gratuite</h3><p>Accessible à tous pour débuter et progresser.</p></div>
+    <div class="pillar"><span class="ic">💳</span><h3>Formation payante</h3><p>Contenus approfondis avec fichiers et quiz.</p></div>
+    <div class="pillar"><span class="ic">💎</span><h3>Formation premium</h3><p>Accompagnement avancé, certificat et suivi.</p></div>
+  </div>
+  <div class="toolbar">
+    <div class="search"><input id="q" placeholder="Rechercher une formation..." oninput="render()"></div>
+    <select class="select" id="fCat" onchange="render()"><option value="">Toutes les catégories</option></select>
+    <select class="select" id="fType" onchange="render()"><option value="">Tous types</option><option value="gratuite">Gratuite</option><option value="payante">Payante</option><option value="premium">Premium</option></select>
+  </div>
+  <div class="grid g3" id="list"></div>
+  <p id="empty" class="center muted hide" style="padding:40px">Aucune formation trouvée.</p>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/components.js"></script>
+<script>
+  mountLayout('academy.html');
+  var S=YCA,C=YCAC,all=S.get('courses');
+  S.get('courseCategories').forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;fCat.appendChild(o);});
+  function render(){
+    var q=document.getElementById('q').value.toLowerCase(),cat=fCat.value,type=fType.value;
+    var res=all.filter(function(f){return (!q||(f.title+f.desc+f.cat).toLowerCase().indexOf(q)>=0)&&(!cat||f.cat===cat)&&(!type||f.type===type);});
+    list.innerHTML=res.map(C.courseCard).join('');
+    empty.classList.toggle('hide',res.length>0);
+    document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');});
+  }
+  window.render=render;render();
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Événements | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Événements</div>
+  <h1>Événements</h1>
+  <p>Formations, conférences, rencontres, ateliers, lives, Creator Meetups et événements avec les marques.</p>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="toolbar"><select class="select" id="fType" onchange="render()"><option value="">Tous les types</option></select></div>
+  <div class="grid g3" id="list"></div>
+  <div class="form-card reveal" id="reg" style="margin-top:40px;max-width:560px">
+    <h2>Inscription à un événement</h2>
+    <div id="ok" class="alert alert-ok hide">Inscription enregistrée. Vous recevrez les détails par email.</div>
+    <form onsubmit="return reg_(event)">
+      <div class="field"><label>Événement <span class="req">*</span></label><select class="select" id="rEv" required></select></div>
+      <div class="form-row c2"><div class="field"><label>Nom <span class="req">*</span></label><input class="input" id="rName" required></div><div class="field"><label>Email <span class="req">*</span></label><input type="email" class="input" id="rMail" required></div></div>
+      <button class="btn btn-primary btn-block">S’inscrire</button>
+    </form>
+  </div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/email.js"></script>
+<script src="js/app.js"></script>
+<script src="js/components.js"></script>
+<script>
+  mountLayout('events.html');
+  var S=YCA,C=YCAC,all=S.get('events');
+  var types=[];all.forEach(function(e){if(types.indexOf(e.type)<0)types.push(e.type);});
+  types.forEach(function(t){var o=document.createElement('option');o.value=t;o.textContent=t;fType.appendChild(o);});
+  all.forEach(function(e){var o=document.createElement('option');o.value=e.id;o.textContent=e.title;rEv.appendChild(o);});
+  function render(){var t=fType.value;var res=all.filter(function(e){return !t||e.type===t;});list.innerHTML=res.map(C.eventCard).join('');document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');});}
+  window.render=render;render();
+  window.reg_=async function(e){e.preventDefault();
+    var btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Inscription…';
+    var ev=S.find('events',rEv.value), payload={type:'événement',opp:ev?ev.title:'',name:rName.value,email:rMail.value,date:new Date().toISOString().slice(0,10)};
+    S.add('applications',payload);
+    try{await YCAEmail.send('Nouvelle inscription événement — YCA RDC',{Type:'Événement',Événement:payload.opp,Nom:payload.name,Email:payload.email});document.getElementById('ok').textContent='Inscription enregistrée et confirmation envoyée par email.';}
+    catch(err){document.getElementById('ok').textContent='Inscription enregistrée. La notification email doit encore être configurée.';console.error(err);}
+    document.getElementById('ok').classList.remove('hide');e.target.reset();btn.disabled=false;btn.textContent='S’inscrire';return false;};
+  document.addEventListener('click',function(e){var a=e.target.closest('a[href="events.html"]');if(a){e.preventDefault();document.getElementById('reg').scrollIntoView({behavior:'smooth'});}});
+</script>
+</body>
+</html>

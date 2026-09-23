@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Créateurs | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Créateurs</div>
+  <h1>Annuaire des créateurs</h1>
+  <p>Découvrez les créateurs YouTube congolais membres, partenaires et vérifiés de la communauté YCA RDC.</p>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="toolbar">
+    <div class="search"><input id="q" placeholder="Rechercher un créateur, une chaîne..." oninput="render()"></div>
+    <select class="select" id="fCity" onchange="render()"><option value="">Toutes les villes</option></select>
+    <select class="select" id="fProv" onchange="render()"><option value="">Toutes les provinces</option></select>
+    <select class="select" id="fNiche" onchange="render()"><option value="">Toutes les niches</option></select>
+    <select class="select" id="fSize" onchange="render()"><option value="">Toute taille</option><option value="petite">Petite chaîne</option><option value="moyenne">Moyenne chaîne</option><option value="grande">Grande chaîne</option></select>
+    <select class="select" id="fType" onchange="render()"><option value="">Tout contenu</option></select>
+  </div>
+  <p class="form-note" style="margin-bottom:18px">Seules les informations que le créateur a choisi de rendre publiques sont affichées.</p>
+  <div class="grid g3" id="list"></div>
+  <p id="empty" class="center muted hide" style="padding:40px">Aucun créateur ne correspond à votre recherche.</p>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/components.js"></script>
+<script>
+  mountLayout('creators.html');
+  var S=YCA,C=YCAC,all=S.get('creators').slice().sort(function(a,b){return (Number(a.order)||999)-(Number(b.order)||999);}).filter(function(c){return c.public!==false;});
+  function uniq(k){var s=[];all.forEach(function(c){if(c[k]&&s.indexOf(c[k])<0)s.push(c[k]);});return s;}
+  function fill(id,arr){var el=document.getElementById(id);arr.forEach(function(v){var o=document.createElement('option');o.value=v;o.textContent=v;el.appendChild(o);});}
+  fill('fCity',uniq('city'));fill('fProv',uniq('province'));fill('fNiche',uniq('niche'));fill('fType',uniq('type'));
+  function render(){
+    var q=q_.value.toLowerCase(),city=fCity.value,prov=fProv.value,niche=fNiche.value,size=fSize.value,type=fType.value;
+    var res=all.filter(function(c){
+      return (!q||(c.name+c.channel+c.niche).toLowerCase().indexOf(q)>=0)
+        &&(!city||c.city===city)&&(!prov||c.province===prov)&&(!niche||c.niche===niche)&&(!size||c.size===size)&&(!type||c.type===type);
+    });
+    list.innerHTML=res.map(C.creatorCard).join('');
+    empty.classList.toggle('hide',res.length>0);
+    document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');});
+  }
+  var q_=document.getElementById('q');
+  window.render=render;render();
+</script>
+</body>
+</html>

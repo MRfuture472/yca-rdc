@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rejoindre la communauté | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Rejoindre</div>
+  <h1>Rejoindre YCA RDC</h1>
+  <p>Remplissez ce formulaire pour rejoindre la communauté des créateurs YouTube congolais. Votre candidature sera examinée par notre équipe.</p>
+</div></section>
+
+<section class="section"><div class="container" style="max-width:720px">
+  <div id="ok" class="alert alert-ok hide"><strong>Votre candidature a bien été reçue.</strong> Notre équipe reviendra vers vous après examen.</div>
+  <form class="form-card reveal" id="form" onsubmit="return join(event)">
+    <div class="form-row c2"><div class="field"><label>Nom <span class="req">*</span></label><input class="input" id="nom" required></div><div class="field"><label>Prénom <span class="req">*</span></label><input class="input" id="prenom" required></div></div>
+    <div class="form-row c2"><div class="field"><label>Nom de chaîne <span class="req">*</span></label><input class="input" id="chaine" required></div><div class="field"><label>Lien YouTube <span class="req">*</span></label><input class="input" id="yt" placeholder="https://youtube.com/@..." required></div></div>
+    <div class="form-row c2"><div class="field"><label>Ville <span class="req">*</span></label><input class="input" id="ville" required></div><div class="field"><label>Province <span class="req">*</span></label><input class="input" id="province" required></div></div>
+    <div class="form-row c2"><div class="field"><label>Email <span class="req">*</span></label><input type="email" class="input" id="email" required></div><div class="field"><label>WhatsApp</label><input class="input" id="wa"></div></div>
+    <div class="form-row c3"><div class="field"><label>Niche</label><input class="input" id="niche"></div><div class="field"><label>Nombre d’abonnés</label><input class="input" id="subs"></div><div class="field"><label>Nombre de vidéos</label><input class="input" id="vids"></div></div>
+    <div class="field"><label>Autres réseaux sociaux</label><input class="input" id="autres" placeholder="TikTok, Instagram, Facebook..."></div>
+    <div class="field"><label>Présentation</label><textarea class="textarea" id="pres"></textarea></div>
+    <div class="field"><label>Pourquoi souhaitez-vous rejoindre YCA RDC ?</label><textarea class="textarea" id="why"></textarea></div>
+    <div class="field"><label class="check"><input type="checkbox" id="consent" required><span>J’accepte que mes informations publiques soient utilisées dans l’annuaire des créateurs si ma candidature est acceptée.</span></label></div>
+    <button class="btn btn-primary btn-block">Envoyer ma candidature</button>
+    <p class="form-note">Vos données sont traitées conformément à notre <a href="legal.html#confidentialite">politique de confidentialité</a>.</p>
+  </form>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/email.js"></script>
+<script src="js/app.js"></script>
+<script>
+  mountLayout('join.html');
+  var S=YCA;
+  window.join=async function(e){e.preventDefault();
+    var btn=e.target.querySelector('button'); btn.disabled=true; btn.textContent='Envoi en cours…';
+    var payload={type:'membre',name:prenom.value+' '+nom.value,channel:chaine.value,youtube:yt.value,city:ville.value,province:province.value,email:email.value,whatsapp:wa.value,niche:niche.value,subs:subs.value,videos:vids.value,others:autres.value,presentation:pres.value,why:why.value,date:new Date().toISOString().slice(0,10),status:'en attente'};
+    S.add('applications',payload);
+    try{
+      await YCAEmail.send('Nouvelle inscription — YCA RDC',{Type:'Membre',Nom:payload.name,'Chaîne':payload.channel,YouTube:payload.youtube,Ville:payload.city,Province:payload.province,Email:payload.email,WhatsApp:payload.whatsapp,Niche:payload.niche,Abonnés:payload.subs,Vidéos:payload.videos,'Autres réseaux':payload.others,Présentation:payload.presentation,'Pourquoi YCA RDC ?':payload.why});
+      document.getElementById('ok').innerHTML='<strong>Inscription reçue !</strong> Votre candidature a été enregistrée et notre équipe a été notifiée par email.';
+    }catch(err){
+      document.getElementById('ok').innerHTML='<strong>Inscription enregistrée.</strong> Votre candidature est bien sauvegardée. L’envoi de l’email de notification doit encore être configuré.';
+      console.error(err);
+    }
+    document.getElementById('ok').classList.remove('hide');document.getElementById('form').classList.add('hide');window.scrollTo({top:0,behavior:'smooth'});return false;
+  };
+  document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');});
+</script>
+</body>
+</html>

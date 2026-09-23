@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Espace Créateur | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Espace Créateur</div>
+  <h1>Espace Créateur</h1>
+  <p>Gérez votre profil, vos statistiques, vos opportunités, campagnes et contrats.</p>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="tabs" id="tabs"></div>
+  <div id="panel"></div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+<script src="js/components.js"></script>
+<script>
+  mountLayout('creator-space.html');
+  var S=YCA;
+  // Créateur de démonstration (en production : créateur connecté)
+  var me=S.get('creators')[3];
+  var TABS=['Profil','Statistiques','Opportunités','Campagnes','Candidatures','Contrats','Notifications'];
+  var cur='Profil';
+  function tabsHTML(){return TABS.map(function(t){return '<div class="tab'+(t===cur?' active':'')+'" onclick="go(\''+t+'\')">'+t+'</div>';}).join('');}
+  function render(){
+    document.getElementById('tabs').innerHTML=tabsHTML();
+    var p=document.getElementById('panel'),h='';
+    if(cur==='Profil'){
+      h='<div class="panel"><div id="pok" class="alert alert-ok hide">Profil mis à jour.</div><div class="flex gap" style="align-items:center;margin-bottom:16px"><img src="'+esc(me.photo)+'" style="width:70px;height:70px;border-radius:50%;object-fit:cover"><div><h3>'+esc(me.name)+'</h3><span class="chip chip-red">'+esc(me.channel)+'</span></div></div>'
+        +'<div class="form-row c2"><div class="field"><label>Nom</label><input class="input" id="e_name" value="'+esc(me.name)+'"></div><div class="field"><label>Nom de chaîne</label><input class="input" id="e_channel" value="'+esc(me.channel)+'"></div></div>'
+        +'<div class="field"><label>Photo (URL)</label><input class="input" id="e_photo" value="'+esc(me.photo)+'"></div>'
+        +'<div class="field"><label>Description</label><textarea class="textarea" id="e_desc">'+esc(me.desc)+'</textarea></div>'
+        +'<div class="form-row c2"><div class="field"><label>Chaîne YouTube</label><input class="input" id="e_yt" value="'+esc(me.youtube)+'"></div><div class="field"><label>TikTok</label><input class="input" id="e_tk" value="'+esc(me.tiktok)+'"></div></div>'
+        +'<div class="form-row c2"><div class="field"><label>Instagram</label><input class="input" id="e_ig" value="'+esc(me.instagram)+'"></div><div class="field"><label>Facebook</label><input class="input" id="e_fb" value="'+esc(me.facebook)+'"></div></div>'
+        +'<label class="check" style="margin-bottom:14px"><input type="checkbox" id="e_pub" '+(me.public?'checked':'')+'> Rendre mon profil public dans l’annuaire</label>'
+        +'<button class="btn btn-primary" onclick="saveProfile()">Enregistrer</button></div>';
+    } else if(cur==='Statistiques'){
+      h='<div class="panel"><div class="form-row c3"><div class="field"><label>Abonnés</label><input class="input" id="s_subs" value="'+esc(me.subs)+'"></div><div class="field"><label>Vidéos</label><input class="input" id="s_vids" value="'+me.videos+'"></div><div class="field"><label>Niche</label><input class="input" id="s_niche" value="'+esc(me.niche)+'"></div></div><button class="btn btn-primary" onclick="saveStats()">Mettre à jour</button></div>';
+    } else if(cur==='Opportunités'){
+      h='<div class="grid g2">'+S.get('opportunities').map(YCAC.oppCard).join('')+'</div>';
+    } else if(cur==='Campagnes'){
+      h='<div class="panel"><table class="data-table"><tr><th>Campagne</th><th>Marque</th><th>Statut</th><th>Livrables</th></tr>'+S.get('campaigns').map(function(k){return '<tr><td>'+esc(k.name)+'</td><td>'+esc(k.brand)+'</td><td>'+esc(k.status)+'</td><td>'+esc(k.deliverables)+'</td></tr>';}).join('')+'</table></div>';
+    } else if(cur==='Candidatures'){
+      h='<div class="panel"><p class="muted">Vos candidatures aux opportunités apparaîtront ici.</p><table class="data-table mt"><tr><th>Opportunité</th><th>Date</th><th>Statut</th></tr><tr><td>Ambassadeurs marque télécom</td><td>2026-09-18</td><td><span class="badge badge-partenaire">En examen</span></td></tr></table></div>';
+    } else if(cur==='Contrats'){
+      h='<div class="panel"><p class="muted">Vos contrats disponibles seront listés ici. 💰 Revenus liés aux campagnes : <strong>1 800 $</strong> (démo).</p></div>';
+    } else {
+      h='<div class="panel"><p>🔔 Nouvelle opportunité : Casting présentateur émission web.</p><div class="divider"></div><p>🔔 Votre campagne “Lancement Smartphone X” est en cours.</p></div>';
+    }
+    p.innerHTML=h;
+  }
+  window.go=function(t){cur=t;render();};
+  window.saveProfile=function(){me.name=e_name.value;me.channel=e_channel.value;me.photo=e_photo.value;me.desc=e_desc.value;me.youtube=e_yt.value;me.tiktok=e_tk.value;me.instagram=e_ig.value;me.facebook=e_fb.value;me.public=e_pub.checked;S.update('creators',me.id,me);document.getElementById('pok').classList.remove('hide');};
+  window.saveStats=function(){me.subs=s_subs.value;me.videos=s_vids.value;me.niche=s_niche.value;S.update('creators',me.id,me);go('Statistiques');};
+  render();
+</script>
+</body>
+</html>

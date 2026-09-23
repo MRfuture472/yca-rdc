@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact | YCA RDC</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="site-header"></div>
+<section class="page-hero"><div class="container">
+  <div class="breadcrumb"><a href="index.html">Accueil</a> / Contact</div>
+  <h1>Contact</h1>
+  <p>Une question, un partenariat, une demande presse ? Écrivez-nous.</p>
+</div></section>
+
+<section class="section"><div class="container"><div class="grid" style="grid-template-columns:1fr;gap:30px">
+  <div class="form-card reveal">
+    <div id="ok" class="alert alert-ok hide">Merci ! Votre message a bien été envoyé.</div>
+    <form onsubmit="return sendMsg(event)">
+      <div class="form-row c2"><div class="field"><label>Nom <span class="req">*</span></label><input class="input" id="mName" required></div><div class="field"><label>Email <span class="req">*</span></label><input type="email" class="input" id="mMail" required></div></div>
+      <div class="field"><label>Sujet</label><input class="input" id="mSub"></div>
+      <div class="field"><label>Message <span class="req">*</span></label><textarea class="textarea" id="mMsg" required></textarea></div>
+      <button class="btn btn-primary btn-block">Envoyer</button>
+    </form>
+  </div>
+  <div id="info" class="panel reveal"></div>
+</div></div></section>
+
+<div id="site-footer"></div>
+<script src="js/data.js"></script>
+<script src="js/email.js"></script>
+<script src="js/app.js"></script>
+<script>
+  mountLayout('contact.html');
+  var S=YCA,site=S.get('site');
+  info.innerHTML='<h3>Coordonnées</h3><p class="mt">📧 <a href="mailto:'+esc(site.email)+'">'+esc(site.email)+'</a></p><p>📞 '+esc(site.phone)+'</p><p>📍 '+esc(site.city)+'</p>';
+  window.sendMsg=async function(e){e.preventDefault();
+    var btn=e.target.querySelector('button');btn.disabled=true;btn.textContent='Envoi…';
+    var payload={name:mName.value,email:mMail.value,subject:mSub.value,message:mMsg.value,date:new Date().toISOString().slice(0,10)};
+    S.add('messages',payload);
+    try{await YCAEmail.send('Nouveau message de contact — YCA RDC',{Nom:payload.name,Email:payload.email,Sujet:payload.subject,Message:payload.message});document.getElementById('ok').textContent='Merci ! Votre message a été envoyé et notre équipe a été notifiée par email.';}
+    catch(err){document.getElementById('ok').textContent='Message enregistré. La notification email doit encore être configurée.';console.error(err);}
+    document.getElementById('ok').classList.remove('hide');e.target.reset();btn.disabled=false;btn.textContent='Envoyer';return false;};
+  document.querySelectorAll('.reveal').forEach(function(e){e.classList.add('in');});
+</script>
+</body>
+</html>

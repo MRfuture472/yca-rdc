@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /gestion-yca-9f3c.html
+Sitemap: sitemap.xml
